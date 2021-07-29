@@ -2,16 +2,20 @@
 let num1 = Math.floor(Math.random() * 100) + 1
 let num2 = Math.floor(Math.random() * 100) + 1;
 
-((x, y) => {
-    console.log(`${x} + ${y} = ${x+y}`);
-})(num1, num2)
+(sumarArrow = function (x, y){
+    let resultado = x + y;
+    return resultado;
+})();
 
+console.log(sumarArrow(num1, num2));
 
 /* Nivell 2 */
 /* exe 1 */
-const nivell2Exercici1 = (y) => 10+y;
+( returnValue = function(x){
+    return x;
+})();
 
-console.log(nivell2Exercici1(5));
+console.log(returnValue(5));
 
 /* exe2 */
 class Persona {
@@ -28,19 +32,23 @@ const namePersona = new Persona('Kevin');
 namePersona.decirNombre();
 
 /* Nivell 3 */
-class Perro {
+
+class Dog {
     constructor(nombre, raza) {
-    this.nombre = nombre;
-    this.raza = raza;
+        this.nombre = nombre;
+        this.raza = raza;
     }
-    
     devolverPerro() {
         console.log('El perro es un '+this.raza+' y se llama '+this.nombre);
     }
 }
 
-const perroAleman = new Perro('Thor', 'Pastor Aleman');
-perroAleman.devolverPerro();
+Dog.prototype.devolverPerro.bind({
+    nombre: 'Thor', 
+    raza: 'Pastor Aleman'
+})();
 
-const perroBulldog = new Perro('Mauri', 'Bulldog Frances');
-perroBulldog.devolverPerro();
+Dog.prototype.devolverPerro.bind({
+    nombre: 'Mauri', 
+    raza: 'Bulldog Frances'
+})();
