@@ -112,7 +112,7 @@ getEmpleado(empId)
 
 getSalario(empId)
     .then(response => console.log(response))
-    .catch(error => console.log(error));
+    .catch(reject => console.log(reject));
 
 /*Nivell 3*/
 
@@ -120,6 +120,23 @@ getSalario(empId)
 Fixi un element catch a la invocació de la fase anterior que 
 capturi qualsevol error i l'imprimeixi per consola.*/
 
-getSalario(10)
+const getSalario2 = (employeeId) => {
+    return new Promise((resolve, reject) => {
+        try {
+            if(salaries.some(sal => sal.id === employeeId) == true){
+                var searchSalary = salaries.find(sal => sal.id === employeeId);
+                resolve(`ID ${employeeId} salary is ${searchSalary.salary}`);
+            } else {
+                reject('Employee doesn\'t have salary or not exist');
+            }
+        } catch (error) {
+            throw error;
+        }
+    });
+}
+
+
+getSalario2('KKAKSKA')
     .then(response => console.log(response))
-    .catch(() => console.log('Error'));
+    .catch(reject => console.log(reject))
+    .catch(error => console.log(error));
