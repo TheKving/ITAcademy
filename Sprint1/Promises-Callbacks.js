@@ -136,7 +136,7 @@ const getSalario2 = (employeeId) => {
 }
 
 
-getSalario2('KKAKSKA')
+getSalario2(100)
     .then(response => console.log(response))
     .catch(reject => console.log(reject))
     .catch(error => console.log(error));
