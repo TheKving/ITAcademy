@@ -88,18 +88,12 @@ niant l'execució de les dues promises..*/
 const empId = 1; //Exe2 & Exe3
 var searchEmployee = employees.find(emp => emp.id === empId);
 
-getEmpleado(empId).then(response => console.log(response) {
+getEmpleado(empId).then(response =>  {
+    console.log(response)
     getSalario(searchEmployee).then(response => console.log(response))
     .catch(reject => console.log(reject.message))
-});
-
-/*
-getEmpleado(empId)
-    .then(response => console.log(response))
-    .catch(error => console.log(error))
-    getSalario(searchEmployee)
-    .then(response => console.log(response))
-    .catch(reject => console.log(reject.message));*/
+})
+.catch(reject => console.log(reject.message));
 
 /*Nivell 3*/
 
