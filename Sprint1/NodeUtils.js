@@ -99,6 +99,9 @@ const readDirectory = () => {
 readDirectory();
 
 
+
+
+
 /* Nivell 3 */
 /* Exercici 1
 Creu una funció que creï dos fitxers codificats en hexadecimal i 
@@ -150,21 +153,21 @@ const encryptSaveFiles = (file) => {
     }); 
 } 
 
+
+
 const decryptFile = (file) => {
     const aes256 = 'aes-256-ctr';
     const iv = crypto.randomBytes(16);
-    
     const r = fs.createReadStream(`${file}.aes`);
     const decrypt = crypto.createDecipheriv(aes256, secretKey, iv);
+    //const w = fs.createWriteStream(file);
     const w = fs.createWriteStream(file);
-    
-    //cconst w = fs.createWriteStream(`${file}.bk`);
 
-    pipe(decrypt)
+    r.pipe(decrypt)
     .pipe(w);
 
 }
 
 
-//encryptSaveFiles(file);
+encryptSaveFiles(file);
 decryptFile(file);
