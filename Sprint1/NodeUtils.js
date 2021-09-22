@@ -9,11 +9,10 @@ let printRecu = number => {
     if (number === 0) {
         return;
     }
-    setTimeout(function() { console.log(number) }, 1000);
-    //console.log(number);
+    console.log(number);
     return printRecu(number - 1);
 };
-console.log(printRecu(10));
+setTimeout(function() { printRecu(10) }, 1000);
 
 /*Exercici 2
 Creu una funció que, en executar-la, 
