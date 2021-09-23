@@ -24,7 +24,7 @@ const file = 'file.txt';
 const content = 'Hola, este es un texto de prueba';
 
 const writeMyFile = (file, content) => {
-    fs.writeFile(file, content, function(err) {
+    fs.writeFileSync(file, content, function(err) {
         if(err) {
             return console.log(err);
         }
@@ -49,7 +49,7 @@ pantalla el que llegeixi d'un fitxer.*/
 
 
 const readMyFile = (file) => {
-    fs.readFile(file, 'utf8', (error, content) => {
+    fs.readFileSync(file, 'utf8', (error, content) => {
         if(error) {
             console.log(`ERROR`);
         } else {
@@ -146,7 +146,7 @@ const encryptSaveFiles = (file) => {
     r.pipe(encrypt)
         .pipe(w);
   
-    fs.unlink(file, function (err) {
+    fs.unlinkSync(file, function (err) {
           if (err) console.log('File is not exist');
           console.log('Original file deleted');
     }); 
