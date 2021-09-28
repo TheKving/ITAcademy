@@ -132,45 +132,24 @@ const iv = crypto.randomBytes(16);
 const encryptSaveFiles = (file) => {
     const r = fs.createReadStream(file);
     const encrypt = crypto.createCipheriv('aes-256-ctr', secretKey, iv);
+    const encrypted = Buffer.concat([encrypt.update(content), encrypt.final()]);
     const w = fs.createWriteStream(`${file}.aes`);
-  
-    r.pipe(encrypt)
-        .pipe(w);
-    
+
+    fs.writeFileSync(`${file}.aes`, encrypted);
+
     var originalFiles = [file, `${file}.hex`, `${file}.base`];
     originalFiles.forEach(path => fs.existsSync(path) && fs.unlinkSync(path));
+    //console.log(`ENCRYPTEDS: ${encrypted}`);
 } 
 
 const decryptFile = (file) => {
     const decrypt = crypto.createDecipheriv('aes-256-ctr', secretKey, iv);
-
     const read = fs.readFileSync(`${file}.aes`);
-    console.log(`ENCRYPTEDS: ${read}`);
-    let decrypted = decrypt.update(read, "hex", "utf8");
-    decrypted += decrypt.final("utf8");
-    console.log(`DECRYPTED: ${decrypted}`);
-    fs.createWriteStream(`${file}.test`);
 
-    //writeMyFile(file, decrypted);
-
-    fs.access(`${file}.test`, fs.constants.F_OK, (error) => {
-        if(error)   fs.createWriteStream(`${file}.test`); //Create file if not exist
-                    fs.writeFileSync(`${file}.test`, decrypted);     
-    });  
-
-}      
-   /* read.pipe(decrypt)
-    .pipe(w);*/
-
-/*    //const w = fs.createWriteStream(file);
-    const w = fs.createWriteStream(file);
-
-    console.log(`AAAAAAAAAAAAAA: ${decrypt.toString()}`);
-    r.pipe(decrypt)
-    .pipe(w);*/
-
-
-
+    const decrpyted = Buffer.concat([decrypt.update(Buffer.from(read, 'hex')), decrypt.final()]);
+    //console.log(`DECRYPTED: ${decrpyted}`);
+    fs.writeFileSync(file, decrpyted);
+}
 
 encryptSaveFiles(file);
 
