@@ -4,15 +4,17 @@
 Creu una funció que imprimeixi recursivamente un
 missatge per consola amb demores d'un segon.*/
 
-
 let printRecu = number => {
+    setTimeout( function() {
     if (number === 0) {
         return;
     }
     console.log(number);
     return printRecu(number - 1);
+    }, 1000);
 };
-setTimeout(function() { printRecu(10) }, 1000);
+
+console.log(printRecu(10));
 
 /*Exercici 2
 Creu una funció que, en executar-la, 
@@ -30,15 +32,6 @@ const writeMyFile = (file, content) => {
         }
         console.log("The file was saved!");
     }); 
- /*   fs.access(file, fs.constants.F_OK, (error) => {
-        if(error) {
-            console.log(`Not exist`);
-            //fs.createWriteStream(file); //Create file if not exist
-        } else {
-            fs.writeFileSync(file, content);
-            console.log(`Se ha escrito en el archivo`);
-        }
-    });*/
 }
 
 writeMyFile(file, content);
@@ -49,16 +42,17 @@ pantalla el que llegeixi d'un fitxer.*/
 
 
 const readMyFile = (file) => {
-    fs.readFileSync(file, 'utf8', (error, content) => {
+    fs.readFile(file, 'utf8', (error, content) => {
         if(error) {
-            console.log(`ERROR`);
+            console.log(`Error at read file.`);
         } else {
-            console.log(content);
+            console.log(`ReadFile: ${content}`);
         }
      });   
 }
 
 readMyFile(file);
+
 
 
 
@@ -87,18 +81,19 @@ const zipFile = (file) => {
 zipFile(file);
 
 const readDirectory = () => {
+    let listDirWin = 'dir C:\\Users\\%USERNAME%';
+    //let listDirLin = 'ls -l ~';
     const exec = require('child_process').exec;
-    exec('dir', {
+    exec(listDirWin, {
 
     }, function(error, stdout, stderr) {
         console.log(stdout);
+        //console.log(`STDERR ${stderr}`);
+        //console.log(error);
       });
 }
 
 readDirectory();
-
-
-
 
 
 /* Nivell 3 */
@@ -125,8 +120,6 @@ const encryptFiles = (file) => {
 
     let encryptedHexa = encryptHexa.update(secretKey, "utf-8", "hex");
     let encryptedBase = encryptBase64.update(secretKey, "utf-8", "base64");
-    //console.log(`Hexadecimal ${encryptedHexa}`);
-    //console.log(`Base ${encryptedBase}`);
 
     fs.writeFileSync(w.path, encryptedHexa);
     fs.writeFileSync(w2.path, encryptedBase);
@@ -134,39 +127,52 @@ const encryptFiles = (file) => {
 
 encryptFiles(file);
 
+const iv = crypto.randomBytes(16);
 
 const encryptSaveFiles = (file) => {
-    const aes256 = 'aes-256-ctr';
-    const iv = crypto.randomBytes(16);
-
     const r = fs.createReadStream(file);
-    const encrypt = crypto.createCipheriv(aes256, secretKey, iv);
+    const encrypt = crypto.createCipheriv('aes-256-ctr', secretKey, iv);
     const w = fs.createWriteStream(`${file}.aes`);
   
     r.pipe(encrypt)
         .pipe(w);
-  
-    fs.unlinkSync(file, function (err) {
-          if (err) console.log('File is not exist');
-          console.log('Original file deleted');
-    }); 
+    
+    var originalFiles = [file, `${file}.hex`, `${file}.base`];
+    originalFiles.forEach(path => fs.existsSync(path) && fs.unlinkSync(path));
 } 
 
-
-
 const decryptFile = (file) => {
-    const aes256 = 'aes-256-ctr';
-    const iv = crypto.randomBytes(16);
-    const r = fs.createReadStream(`${file}.aes`);
-    const decrypt = crypto.createDecipheriv(aes256, secretKey, iv);
-    //const w = fs.createWriteStream(file);
+    const decrypt = crypto.createDecipheriv('aes-256-ctr', secretKey, iv);
+
+    const read = fs.readFileSync(`${file}.aes`);
+    console.log(`ENCRYPTEDS: ${read}`);
+    let decrypted = decrypt.update(read, "hex", "utf8");
+    decrypted += decrypt.final("utf8");
+    console.log(`DECRYPTED: ${decrypted}`);
+    fs.createWriteStream(`${file}.test`);
+
+    //writeMyFile(file, decrypted);
+
+    fs.access(`${file}.test`, fs.constants.F_OK, (error) => {
+        if(error)   fs.createWriteStream(`${file}.test`); //Create file if not exist
+                    fs.writeFileSync(`${file}.test`, decrypted);     
+    });  
+
+}      
+   /* read.pipe(decrypt)
+    .pipe(w);*/
+
+/*    //const w = fs.createWriteStream(file);
     const w = fs.createWriteStream(file);
 
+    console.log(`AAAAAAAAAAAAAA: ${decrypt.toString()}`);
     r.pipe(decrypt)
-    .pipe(w);
+    .pipe(w);*/
 
-}
+
 
 
 encryptSaveFiles(file);
+
 decryptFile(file);
+
